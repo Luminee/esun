@@ -1,0 +1,32 @@
+{
+  "name": "luminee/esun",
+  "description": "Make ElasticSearch manipulations easy. Unify commands for all data types.",
+  "type": "library",
+  "keywords": [
+    "elasticsearch",
+    "es",
+    "sql",
+    "orm"
+  ],
+  "homepage": "https://github.com/Luminee/esun",
+  "authors": [
+    {
+      "name": "LuminEe",
+      "email": "1123462990@qq.com",
+      "homepage": "https://github.com/Luminee"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Luminee\\Esun\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
