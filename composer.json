@@ -1,6 +1,6 @@
 {
   "name": "luminee/esun",
-  "description": "Make ElasticSearch manipulations easy. Unify commands for all data types.",
+  "description": "Make ElasticSearch operation like SQL, build ORM for ElasticSearch",
   "type": "library",
   "keywords": [
     "elasticsearch",
@@ -26,6 +26,13 @@
   "autoload": {
     "psr-4": {
       "Luminee\\Esun\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Luminee\\Esun\\EsunServiceProvider"
+        ]
     }
   },
   "minimum-stability": "dev"
