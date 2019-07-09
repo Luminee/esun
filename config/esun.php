@@ -12,7 +12,9 @@ return [
 
             'port' => env('ES_PORT', 9200),
 
-            'index' => env('ES_STORE', 'example'),
+            'index' => env('ES_STORE'),
+
+            'type' => env('ES_TYPE', '_doc'),
         ],
 
     ],

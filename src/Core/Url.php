@@ -71,6 +71,11 @@ class Url
         return self::init($uri)->append('_search')->getUri();
     }
 
+    public static function findUrl($uri, $id)
+    {
+        return self::init($uri)->append($id)->getUri();
+    }
+
     // Protected
 
     protected static function init($uri)

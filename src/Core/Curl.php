@@ -18,36 +18,23 @@ final class Curl
 
     public function curlGet($url, $data)
     {
-        $response = $this->curl('GET', $url, $data);
-        return json_decode($response);
+        return $this->curl('GET', $url, $data);
     }
 
     public function curlPost($url, $data, $xnd = false)
     {
-        $response = $this->curl('POST', $url, $data, $xnd);
-        return json_decode($response);
-    }
-
-    public function curlPut($url, $data)
-    {
-        $response = $this->curl('POST|PUT', $url, $data);
-        return json_decode($response);
-    }
-
-    public function curlDelete($url, $data)
-    {
-        $response = $this->curl('POST|DELETE', $url, $data);
-        return json_decode($response);
+        return $this->curl('POST', $url, $data, $xnd);
     }
 
     /**
      * @param $method
      * @param $url
      * @param $data
+     * @param $xnd = false
      * @throws \Exception
      * @return bool|string
      */
-    private function curl($method, $url, $data, $xnd = false)
+    public function curl($method, $url, $data, $xnd = false)
     {
         $ch = curl_init($url);
         list($method, $request) = $this->handleMethod($method);
@@ -69,7 +56,9 @@ final class Curl
 
     private function handleMethod($method)
     {
-        if ($method == 'GET' || $method == 'POST') return [$method, null];
-        if (strstr($method, '|')) return explode('|', $method);
+        if (strstr($method, '|')) {
+            return explode('|', $method);
+        }
+        return [$method, null];
     }
 }

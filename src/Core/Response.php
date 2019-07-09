@@ -14,12 +14,18 @@ class Response
      */
     protected $_id = null;
 
-    public function __construct($response)
+    public function __construct()
     {
-        if (isset($response->result)) {
-            $this->result = $response->result;
-            $this->_id = $response->_id;
-        }
+    }
+
+    public static function find($response, $flag = '_source')
+    {
+        return self::init($response, $flag)->getResult();
+    }
+
+    public static function get($response, $flag = 'hits')
+    {
+        return self::init($response, $flag)->getResult();
     }
 
     /**
@@ -60,15 +66,37 @@ class Response
 
     // Protected
 
-    protected static function init($response)
+    protected static function init($response, $flag = 'result')
     {
-        return new self($response);
+        dd($response);
+        $self = new self();
+        switch ($flag) {
+            case 'result':
+                $self->result = $response->result;
+                $self->_id = $response->_id;
+                return $self;
+            case '_source':
+                $self->result = $response->_source;
+                $self->result->_id = $response->_id;
+                return $self;
+            case 'hits':
+                $self->result = $response->hits;
+                return $self;
+            default:
+                $self->result = $response;
+                return $self;
+        }
     }
 
     protected function judge($flag)
     {
         if (is_null($this->result)) return null;
         return $this->result == $flag ? true : false;
+    }
+
+    protected function getHits($hits)
+    {
+        return $hits;
     }
 
     protected function getResult()

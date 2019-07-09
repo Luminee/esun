@@ -1,13 +1,12 @@
 <?php
 
-namespace Luminee\Esun;
+namespace Luminee\Esun\Query;
 
 use Luminee\Esun\Core\Url;
-use Luminee\Esun\Core\Curl;
 use Luminee\Esun\Core\Data;
 use Luminee\Esun\Core\Config;
 use Luminee\Esun\Core\Response;
-use Luminee\Esun\Core\Connector;
+use Luminee\Esun\Core\Processor;
 
 class Builder
 {
@@ -16,9 +15,13 @@ class Builder
      */
     protected $connector;
 
-    protected $curl;
+    protected $processor;
 
     protected $table;
+
+    protected $_id;
+
+    protected $wheres = [];
 
     protected $url;
 
@@ -26,9 +29,8 @@ class Builder
 
     public function __construct()
     {
-        $this->curl = Curl::init();
-        $config = Config::getConfig();
-        $this->connector = Connector::init($config);
+        $this->processor = Processor::init();
+        $this->connector = Connector::init(Config::getConfig());
     }
 
     /**
@@ -41,6 +43,20 @@ class Builder
         return $this;
     }
 
+    public function find($id)
+    {
+        $this->_id = $id;
+        $this->url = Url::findUrl($this->getUri(), $this->_id);
+        return $this->response('find', 'get');
+    }
+
+    public function get()
+    {
+        $this->url = Url::searchUrl($this->getUri());
+        $this->data = Data::toJson($this->wheres);
+        return $this->response('get', 'get');
+    }
+
     /**
      * @param $id
      * @param $data
@@ -50,7 +66,7 @@ class Builder
     {
         $this->url = Url::createUrl($this->getUri(), $id);
         $this->data = Data::toJson($data);
-        return $this->response('create', 'curlPut');
+        return $this->response('create', 'put');
     }
 
     /**
@@ -83,20 +99,20 @@ class Builder
     public function delete($id)
     {
         $this->url = Url::deleteUrl($this->getUri(), $id);
-        return $this->response('delete', 'curlDelete');
+        return $this->response('delete', 'delete');
     }
 
     // Protected
 
-    protected function response($function, $method = 'curlPost')
+    protected function response($function, $method = 'post')
     {
-        $response = $this->curl->$method($this->url, $this->data);
+        $response = $this->processor->$method($this->url, $this->data);
         return Response::$function($response);
     }
 
     protected function getUri()
     {
-        return $this->connector->getUri() . '/' . $this->table;
+        return $this->connector->getUri($this->table);
     }
 
 

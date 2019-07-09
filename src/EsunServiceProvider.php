@@ -2,6 +2,7 @@
 
 namespace Luminee\Esun;
 
+use Luminee\Esun\Query\Builder;
 use Illuminate\Support\ServiceProvider;
 
 class EsunServiceProvider extends ServiceProvider
@@ -23,6 +24,9 @@ class EsunServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('es', function ($app) {
+            return new Builder($app);
+        });
         $this->mergeConfigFrom(realpath(__DIR__.'/../config/esun.php'), 'esun');
     }
 }
