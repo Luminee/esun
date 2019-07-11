@@ -4,9 +4,7 @@ namespace Luminee\Esun\Query;
 
 use Luminee\Esun\Core\Url;
 use Luminee\Esun\Core\Data;
-use Luminee\Esun\Core\Config;
 use Luminee\Esun\Core\Response;
-use Luminee\Esun\Core\Processor;
 
 class Builder
 {
@@ -19,6 +17,8 @@ class Builder
 
     protected $table;
 
+    protected $type;
+
     protected $_id;
 
     protected $wheres = [];
@@ -27,10 +27,10 @@ class Builder
 
     protected $data = '';
 
-    public function __construct()
+    public function __construct($processor, $connector)
     {
-        $this->processor = Processor::init();
-        $this->connector = Connector::init(Config::getConfig());
+        $this->processor = $processor;
+        $this->connector = $connector;
     }
 
     /**
@@ -112,7 +112,7 @@ class Builder
 
     protected function getUri()
     {
-        return $this->connector->getUri($this->table);
+        return $this->connector->getUri($this->table, $this->type);
     }
 
 

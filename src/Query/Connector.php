@@ -47,13 +47,14 @@ class Connector
 
     /**
      * @param $table
+     * @param $type
      * @return string
      */
-    public function getUri($table)
+    public function getUri($table, $type)
     {
         $uri = $this->host . ':' . $this->port . '/';
         if (empty($this->index)) {
-            return $uri . $table . '/' . $this->type;
+            return $uri . $table . '/' . (empty($type) ? $this->type : $type);
         } else {
             return $uri . $this->index . '/' . $table;
         }

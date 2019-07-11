@@ -68,7 +68,6 @@ class Response
 
     protected static function init($response, $flag = 'result')
     {
-        dd($response);
         $self = new self();
         switch ($flag) {
             case 'result':
