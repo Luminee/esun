@@ -2,20 +2,36 @@
 
 namespace Luminee\Esun;
 
-use Luminee\Esun\Core\Config;
-use Luminee\Esun\Core\Processor;
+use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 use Luminee\Esun\Query\Builder;
-use Luminee\Esun\Query\Connector;
+use Luminee\Esun\Query\Grammar;
 
 class Esun
 {
-    protected $processor;
-    protected $connector;
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var array
+     */
+    protected $connection;
+
+    protected $grammar;
 
     public function __construct()
     {
-        $this->processor = Processor::init();
-        $this->connector = Connector::init(Config::getConfig());
+        $this->config = config('esun');
+        $this->connection = $this->config['connections'][$this->config['default']];
+        $this->client = $this->clientBuilder();
+        $this->grammar = new Grammar();
     }
 
     public function table($table)
@@ -23,9 +39,29 @@ class Esun
         return $this->query()->table($table);
     }
 
+    public static function newBuilder()
+    {
+        return (new static())->query();
+    }
+
     protected function query()
     {
-        return new Builder($this->processor, $this->connector);
+        return new Builder($this->connection, $this->grammar, $this->client);
+    }
+
+    /**
+     * @return Client
+     */
+    protected function clientBuilder(): Client
+    {
+        $clientBuilder = ClientBuilder::create();
+
+        $clientBuilder
+            ->setConnectionPool($this->config['connection_pool'])
+            ->setSelector($this->config['selector'])
+            ->setHosts(explode(',', $this->connection['hosts']));
+
+        return $clientBuilder->build();
     }
 
 
